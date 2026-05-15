@@ -1,0 +1,1583 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glass Empires — Wuxia Faction Fantasy RPG</title>
+  <meta name="description" content="A Braunstein-style tabletop RPG of faction politics, civil war, and pre-industrial power on the discworld of Aia. Free SRD, early access.">
+
+  <meta property="og:title" content="Glass Empires">
+  <meta property="og:description" content="Civil war. Cannibalism. Empire. A free faction RPG.">
+  <meta property="og:image" content="assets/grok-prototype-no-logo.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://glassempires.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Glass Empires">
+  <meta name="twitter:description" content="Civil war. Cannibalism. Empire. A free faction RPG.">
+  <meta name="twitter:image" content="https://glassempires.com/assets/grok-prototype-no-logo.webp">
+
+  <link rel="icon" type="image/svg+xml" href="favicon.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@400;700&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;0,7..72,500;0,7..72,700;1,7..72,300;1,7..72,400&display=swap" rel="stylesheet">
+
+  <link rel="preload" as="image" href="logo/main-wide.webp">
+  <link rel="preload" as="image" href="assets/aia-disc-combined.webp">
+  <link rel="preload" as="image" href="assets/clouds-main.webp">
+  <link rel="preload" as="image" href="assets/clouds-secondary.webp">
+  <link rel="preload" as="image" href="assets/grok-prototype-no-logo.webp">
+
+  <style>
+    /* ═══════════════════ Reset ═══════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    /* ═══════════════════ Tokens ═══════════════════ */
+    :root {
+      --indigo-950: #0c0f1f;
+      --indigo-900: #131836;
+      --gold-700:   #7e5b1f;
+      --gold-500:   #c49234;
+      --gold-400:   #d4a94e;
+      --gold-300:   #e0c070;
+      --gold-200:   #ebda9e;
+      --teal-500:   #3a8e8e;
+
+      --bg:            #0a0805;
+      --bg-surface:    #110d09;
+      --bg-elevated:   #1a140d;
+      --text:          #f0e6d0;
+      --text-soft:     #c4b08a;
+      --text-muted:    #8a7458;
+      --text-faint:    #5e503c;
+      --heading:       var(--gold-300);
+      --accent:        #62EDD8;
+      --accent-deep:   #2dc4b0;
+      --gold-ui:       var(--gold-400);
+      --border:        rgba(196,146,52,0.18);
+      --border-strong: rgba(196,146,52,0.38);
+      --link:          #62EDD8;
+
+      /* SVG arrow used by buttons and links */
+      --arrow-mask: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 5l7 7-7 7'/%3E%3C/svg%3E");
+    }
+
+    /* ═══════════════════ Base ═══════════════════ */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Literata', Georgia, serif;
+      font-weight: 400;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img, svg { max-width: 100%; height: auto; display: block; }
+    a { color: var(--link); text-decoration: none; transition: color 0.15s; }
+    a:hover { text-decoration: underline; }
+
+    h1, h2, h3 {
+      font-family: 'Inknut Antiqua', Georgia, serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      line-height: 1.0;
+      color: var(--heading);
+    }
+    em { font-style: italic; }
+    strong { font-weight: 700; color: var(--text); }
+
+    /* ═══════════════════ Layout ═══════════════════ */
+    .container {
+      max-width: 72em;
+      margin: 0 auto;
+      padding: 0 2.5em;
+    }
+    .container-tight {
+      max-width: 48em;
+      margin: 0 auto;
+      padding: 0 2.5em;
+    }
+    section { padding: 6em 0; position: relative; }
+
+    .section-eyebrow {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.72em;
+      letter-spacing: 0.24em;
+      color: var(--gold-400);
+      text-transform: uppercase;
+      margin-bottom: 0.8em;
+    }
+    .rule-divider {
+      width: 4em;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-ui), transparent);
+      border: none;
+      margin: 0.6em 0 1em;
+    }
+    .rule-divider.center {
+      margin: 0.6em auto 1em;
+      background: linear-gradient(90deg, transparent, var(--gold-ui), transparent);
+    }
+
+    /* ═══════════════════ Arrow icon ═══════════════════ */
+    .arrow-after::after,
+    .btn-primary::after,
+    .btn-secondary::after,
+    .excerpt-link::after {
+      content: '';
+      display: inline-block;
+      width: 1.05em;
+      height: 0.85em;
+      margin-left: 0.55em;
+      vertical-align: -0.06em;
+      background: currentColor;
+      -webkit-mask: var(--arrow-mask) center/contain no-repeat;
+              mask: var(--arrow-mask) center/contain no-repeat;
+      transition: transform 0.18s ease-out;
+    }
+    .btn-primary:hover::after,
+    .btn-secondary:hover::after,
+    .excerpt-link:hover::after,
+    .arrow-after:hover::after { transform: translateX(3px); }
+
+    /* ═══════════════════ Buttons ═══════════════════ */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.9em 2em;
+      background: var(--gold-500);
+      color: var(--indigo-950);
+      font-family: 'Inknut Antiqua', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.05em;
+      border-radius: 0.2em;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.22s, border-color 0.18s;
+      box-shadow: 0 6px 25px rgba(196,146,52,0.18);
+    }
+    .btn-primary:hover {
+      background: var(--gold-400);
+      text-decoration: none;
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 1px var(--accent),
+        0 8px 30px rgba(98,237,216,0.28),
+        0 0 40px rgba(98,237,216,0.12);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.85em 1.8em;
+      border: 1px solid var(--border-strong);
+      color: var(--text-soft);
+      background: transparent;
+      font-family: 'Inknut Antiqua', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.05em;
+      border-radius: 0.2em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.18s, color 0.18s, background 0.18s, box-shadow 0.22s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(98,237,216,0.04);
+      text-decoration: none;
+      box-shadow: 0 0 30px rgba(98,237,216,0.12);
+    }
+
+    /* ═══════════════════ Sticky Subscribe ═══════════════════ */
+    .subscribe-pill {
+      position: fixed;
+      top: 1.2em;
+      right: 1.2em;
+      z-index: 60;
+      padding: 0.6em 1.1em;
+      background: rgba(26, 20, 13, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-strong);
+      color: var(--gold-300);
+      font-family: 'Inknut Antiqua', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.75em;
+      letter-spacing: 0.08em;
+      border-radius: 2em;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.12s;
+    }
+    .subscribe-pill:hover {
+      background: rgba(40, 30, 18, 0.95);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .subscribe-pill::before {
+      content: '◆';
+      margin-right: 0.5em;
+      color: var(--gold-500);
+    }
+    .subscribe-pill:hover::before { color: var(--accent); }
+
+    /* ═══════════════════ HERO ═══════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      background: #04060d;
+      padding: 0;
+    }
+    .disc-stage {
+      position: absolute;
+      inset: 0;
+      background: url('assets/starfield.svg') center/cover no-repeat;
+    }
+    .disc-pos {
+      position: absolute;
+      left: -56vmin;
+      bottom: -62vmin;
+      width: 168vmin;
+      height: 168vmin;
+      perspective: 3400px;
+      perspective-origin: 70% 30%;
+      pointer-events: none;
+    }
+    .disc-rotator {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      animation: discSpin 220s linear infinite;
+      will-change: transform;
+    }
+    .disc-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      user-select: none;
+      pointer-events: none;
+      filter: brightness(0.92) contrast(1.05) saturate(1.02);
+    }
+
+    @keyframes discSpin {
+      from { transform: rotateX(64deg) rotateY(14deg) rotateZ(0deg); }
+      to   { transform: rotateX(64deg) rotateY(14deg) rotateZ(360deg); }
+    }
+    /* Same axis & origin as the disc, slower Z-rotations for parallax */
+    @keyframes cloudsMainSpin {
+      from { transform: rotateX(64deg) rotateY(14deg) rotateZ(0deg); }
+      to   { transform: rotateX(64deg) rotateY(14deg) rotateZ(360deg); }
+    }
+    @keyframes cloudsSecondarySpin {
+      from { transform: rotateX(64deg) rotateY(14deg) rotateZ(0deg); }
+      to   { transform: rotateX(64deg) rotateY(14deg) rotateZ(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .disc-rotator,
+      .clouds-main,
+      .clouds-secondary {
+        animation: none;
+        transform: rotateX(64deg) rotateY(14deg) rotateZ(22deg);
+      }
+    }
+
+    /* Stacked cloud sheets — same plane as the disc, rotating slower so
+       they appear to drift in opposite parallax against the spinning world.
+       Source textures were drawn 1.41× the disc's dimensions (6000 vs 4250),
+       so the rotators extend 20.5% past the disc footprint on each side to
+       preserve that ratio. Same center → same rotation pivot as the disc. */
+    .clouds-main,
+    .clouds-secondary {
+      position: absolute;
+      inset: -20.5%;
+      transform-style: preserve-3d;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .clouds-main {
+      animation: cloudsMainSpin 164s linear infinite;       /* ~20% slower than disc */
+      z-index: 2;
+    }
+    .clouds-secondary {
+      animation: cloudsSecondarySpin 90s linear infinite;  /* ~10% slower than disc */
+      z-index: 3;
+    }
+    .cloud-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      user-select: none;
+      pointer-events: none;
+    }
+    .clouds-main .cloud-layer {
+      opacity: 1;
+      filter:
+        brightness(0.92)
+        drop-shadow(0 14px 18px rgba(0,0,0,0.45))
+        drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+    }
+    .clouds-secondary .cloud-layer {
+      opacity: 1;
+      filter:
+        brightness(1.02)
+        drop-shadow(0 8px 12px rgba(0,0,0,0.35))
+        drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    }
+
+    /* Directional terminator shadow — does NOT rotate with the disc.
+       Lives inside .disc-pos so border-radius and dimensions match the
+       disc footprint, with its own static rotation matching the disc's
+       resting transform so it tilts in 3D with the planet. */
+    .disc-shadow {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 28% 26%,
+          rgba(255,210,160,0.08) 0%,
+          rgba(255,210,160,0.03) 14%,
+          transparent 32%),
+        radial-gradient(circle at 72% 78%,
+          rgba(0,0,0,0.75) 0%,
+          rgba(0,0,0,0.55) 22%,
+          rgba(0,0,0,0.25) 42%,
+          transparent 58%);
+      transform: rotateX(64deg) rotateY(14deg);
+      transform-origin: center;
+      mix-blend-mode: multiply;
+    }
+    /* Atmospheric outer halo */
+    .disc-pos::after {
+      content: '';
+      position: absolute;
+      inset: 6%;
+      border-radius: 50%;
+      box-shadow:
+        inset 0 0 180px rgba(0,0,0,0.45),
+        0 0 160px rgba(60,110,180,0.14);
+      pointer-events: none;
+      transform: rotateX(64deg) rotateY(14deg);
+    }
+
+    .hero-overlay {
+      position: relative;
+      z-index: 5;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 2.5em 3em 5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      position: absolute;
+      top: 1.8em;
+      left: 3em;
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.78em;
+      letter-spacing: 0.24em;
+      color: var(--gold-300);
+      text-transform: uppercase;
+      text-shadow: 0 0 30px rgba(0,0,0,0.85);
+    }
+    .hero-content {
+      position: relative;
+      max-width: 46em;
+      margin: 0 auto;
+      padding: 1.5em 2em;
+      isolation: isolate;
+    }
+    .hero-content::before {
+      content: '';
+      position: absolute;
+      inset: -2em -3em;
+      background:
+        radial-gradient(ellipse 70% 80% at center,
+          rgba(4,6,13,0.72) 0%,
+          rgba(4,6,13,0.55) 35%,
+          rgba(4,6,13,0.25) 65%,
+          transparent 90%);
+      z-index: -1;
+      pointer-events: none;
+      filter: blur(8px);
+    }
+    .hero-logo {
+      width: 100%;
+      max-width: 760px;
+      height: auto;
+      margin: 0 auto 1.5em;
+      filter: drop-shadow(0 6px 30px rgba(0,0,0,0.85))
+              drop-shadow(0 2px 12px rgba(0,0,0,0.6));
+    }
+    .hero-thesis {
+      font-family: 'Inknut Antiqua', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(1.15em, 1.85vw, 1.5em);
+      line-height: 1.4;
+      color: var(--gold-300);
+      margin-bottom: 0.3em;
+      text-shadow:
+        0 2px 12px rgba(0,0,0,0.95),
+        0 0 30px rgba(0,0,0,0.9);
+    }
+    .hero-thesis-sub {
+      font-family: 'Inknut Antiqua', serif;
+      font-style: italic;
+      font-size: clamp(1em, 1.5vw, 1.2em);
+      line-height: 1.45;
+      color: var(--text-soft);
+      margin-bottom: 2em;
+      text-shadow:
+        0 2px 12px rgba(0,0,0,0.95),
+        0 0 30px rgba(0,0,0,0.9);
+    }
+    .hero-cta-group {
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ═══════════════════ Early Access Bar ═══════════════════ */
+    .ea-bar {
+      background: rgba(196,146,52,0.1);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85em 2em;
+      text-align: center;
+    }
+    .ea-bar p {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.78em;
+      letter-spacing: 0.12em;
+      color: var(--gold-400);
+    }
+    .ea-bar a { color: var(--accent); }
+    .ea-bar a:hover { text-decoration: underline; }
+
+    /* ═══════════════════ Cover region (wraps Thesis + From The Book) ═══════════════════ */
+    .cover-region {
+      position: relative;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .cover-art {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      aspect-ratio: 2700 / 3450;
+      background-image: url('assets/grok-prototype-no-logo.webp');
+      background-size: 100% auto;
+      background-position: center top;
+      background-repeat: no-repeat;
+      z-index: 0;
+      pointer-events: none;
+      filter: saturate(0.88);
+    }
+    .cover-veil {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      aspect-ratio: 2700 / 3450;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 35%,
+          rgba(10,8,5,0.45) 0%,
+          rgba(10,8,5,0.70) 60%,
+          rgba(10,8,5,0.92) 100%),
+        linear-gradient(180deg,
+          rgba(10,8,5,0.35) 0%,
+          rgba(10,8,5,0.42) 30%,
+          rgba(10,8,5,0.60) 65%,
+          rgba(10,8,5,0.92) 88%,
+          rgba(10,8,5,1)    100%);
+    }
+
+    /* ═══════════════════ Manifesto ═══════════════════ */
+    .manifesto {
+      position: relative;
+      z-index: 2;
+      padding: 9em 0 8em;
+      text-align: center;
+    }
+    .manifesto-stack {
+      max-width: 38em;
+      margin: 0 auto;
+      position: relative;
+    }
+    .manifesto-stack::before {
+      content: '';
+      display: block;
+      width: 2.4em;
+      height: 1px;
+      background: var(--gold-ui);
+      opacity: 0.55;
+      margin: 0 auto 2em;
+    }
+    .manifesto-line {
+      font-family: 'Inknut Antiqua', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.3em;
+      line-height: 1.55;
+      color: var(--text-soft);
+      margin: 1.6em 0;
+      text-shadow: 0 1px 20px rgba(0,0,0,0.8);
+    }
+    .manifesto-line.lead {
+      font-size: 2em;
+      font-weight: 700;
+      font-style: normal;
+      font-variant-caps: small-caps;
+      color: var(--gold-200);
+      line-height: 1.1;
+      margin-bottom: 1em;
+    }
+    .manifesto-line.lead small {
+      display: block;
+      font-size: 0.5em;
+      font-style: italic;
+      font-variant-caps: normal;
+      font-weight: 400;
+      color: var(--text-soft);
+      margin-top: 0.7em;
+      letter-spacing: 0;
+    }
+    .manifesto-diamond {
+      color: var(--gold-500);
+      font-size: 0.85em;
+      margin: 0.5em 0;
+      opacity: 0.55;
+    }
+    .manifesto-attribution {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-size: 0.78em;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 3.5em;
+    }
+    .manifesto-attribution a {
+      color: var(--gold-300);
+      border-bottom: 1px solid rgba(224,192,112,0.4);
+      padding-bottom: 0.1em;
+    }
+    .manifesto-attribution a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ═══════════════════ Rules Excerpts (overlapping cards) ═══════════════════ */
+    .excerpts {
+      position: relative;
+      z-index: 2;
+      padding: 8em 0 9em;
+      background: transparent;
+    }
+    .excerpts-head {
+      max-width: 36em;
+      margin: 0 auto 5em;
+      text-align: center;
+    }
+    .excerpts-head h2 {
+      font-size: 2.4em;
+      margin-bottom: 0.3em;
+    }
+    .excerpts-stack {
+      max-width: 66em;
+      margin: 0 auto;
+      padding: 2em 0;
+      position: relative;
+    }
+    .excerpt {
+      max-width: 38em;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--gold-500);
+      border-radius: 0.2em;
+      padding: 2.6em 3em 2.3em;
+      position: relative;
+      box-shadow:
+        0 28px 55px rgba(0,0,0,0.6),
+        0 5px 12px rgba(0,0,0,0.45);
+      transition: transform 0.4s cubic-bezier(.2,.7,.2,1), box-shadow 0.4s, z-index 0s 0.4s;
+    }
+    .excerpt:nth-child(1) {
+      transform: rotate(-2.1deg) translateX(-12%);
+      z-index: 1;
+    }
+    .excerpt:nth-child(2) {
+      transform: rotate(1.7deg) translateX(10%);
+      margin-top: -2.5em;
+      z-index: 2;
+    }
+    .excerpt:nth-child(3) {
+      transform: rotate(-1.2deg) translateX(-4%);
+      margin-top: -2.5em;
+      z-index: 3;
+    }
+    .excerpt:hover {
+      transform: rotate(0deg) translateX(0) translateY(-6px);
+      z-index: 10;
+      transition: transform 0.35s cubic-bezier(.2,.7,.2,1), box-shadow 0.35s, z-index 0s;
+      box-shadow:
+        0 35px 70px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(98,237,216,0.25),
+        0 5px 12px rgba(0,0,0,0.45);
+    }
+    .excerpt-tag {
+      position: absolute;
+      top: -0.85em;
+      left: 2.5em;
+      background: var(--bg);
+      padding: 0 0.8em;
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.7em;
+      letter-spacing: 0.22em;
+      color: var(--gold-400);
+      text-transform: uppercase;
+    }
+    .excerpt h3 {
+      font-size: 1.55em;
+      margin-bottom: 0.3em;
+      color: var(--gold-200);
+    }
+    .excerpt-subtitle {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.78em;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 1.4em;
+      padding-bottom: 1em;
+      border-bottom: 1px solid var(--border);
+    }
+    .excerpt p {
+      color: var(--text-soft);
+      font-size: 0.95em;
+      line-height: 1.8;
+      margin-bottom: 0.9em;
+    }
+    .excerpt p:last-of-type { margin-bottom: 1.4em; }
+    .excerpt-rule {
+      background: rgba(196,146,52,0.08);
+      border-left: 3px solid var(--gold-500);
+      padding: 1em 1.25em;
+      margin: 1.2em 0;
+      font-size: 0.93em;
+      color: var(--text);
+      border-radius: 0 0.15em 0.15em 0;
+    }
+    .excerpt-rule strong { color: var(--gold-300); }
+    .excerpt-link {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.78em;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(98,237,216,0.35);
+      padding-bottom: 0.15em;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .excerpt-link:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ═══════════════════ The Island ═══════════════════ */
+    .island {
+      padding: 8em 0 9em;
+      position: relative;
+      overflow: hidden;
+      background-color: #1a0d04;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 22% 30%, rgba(255,150,60,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 90% 90%, rgba(0,0,0,0.5) 0%, transparent 60%),
+        url('assets/wood-grain.svg');
+      background-size: cover, cover, 900px 900px;
+      background-position: 0 0, 0 0, center;
+      background-repeat: no-repeat, no-repeat, repeat;
+    }
+    .island::before {
+      /* candle warmth flicker */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 18% 25%, rgba(255,140,40,0.10) 0%, transparent 50%);
+      animation: candleflicker 5.5s ease-in-out infinite alternate;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+    @keyframes candleflicker {
+      0%   { opacity: 0.55; }
+      25%  { opacity: 1; }
+      48%  { opacity: 0.7; }
+      72%  { opacity: 0.95; }
+      100% { opacity: 0.6; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .island::before { animation: none; opacity: 0.85; }
+    }
+    .island-frame {
+      max-width: 80em;
+      margin: 0 auto;
+      padding: 0 2em;
+      perspective: 2400px;
+      perspective-origin: 25% 70%;
+      position: relative;
+    }
+    .island-map-wrap {
+      position: relative;
+      max-width: 62em;
+      margin: 0 auto;
+      transform: rotateX(16deg) rotateY(-14deg) rotateZ(-1.8deg);
+      transform-origin: center center;
+      filter:
+        drop-shadow(-40px 30px 50px rgba(0,0,0,0.75))
+        drop-shadow(0 0 30px rgba(255,140,40,0.08));
+    }
+    .island-map-wrap img {
+      width: 100%;
+      filter: sepia(0.42) saturate(1.35) hue-rotate(-8deg) brightness(0.78) contrast(1.12);
+      border-radius: 0.15em;
+    }
+    .island-map-wrap::before {
+      /* warm directional candlelight on map */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 22% 18%, rgba(255,170,80,0.28) 0%, transparent 55%),
+        linear-gradient(135deg, rgba(255,140,40,0.06) 0%, transparent 40%, rgba(0,0,0,0.35) 100%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      border-radius: 0.15em;
+      animation: candleflicker 4.5s ease-in-out infinite alternate;
+    }
+    .island-card {
+      position: absolute;
+      right: 14%;
+      bottom: -3.5em;
+      max-width: 28em;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--gold-500);
+      border-radius: 0.2em;
+      padding: 2em 2.2em;
+      z-index: 3;
+      box-shadow:
+        0 25px 55px rgba(0,0,0,0.7),
+        0 5px 12px rgba(0,0,0,0.45);
+      transform: rotate(1.6deg);
+    }
+    .island-card h2 {
+      font-size: 1.45em;
+      margin-bottom: 0.25em;
+      color: var(--gold-200);
+    }
+    .island-card p {
+      color: var(--text-soft);
+      font-size: 0.9em;
+      margin-bottom: 0.8em;
+      line-height: 1.7;
+    }
+    .island-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5em 1.5em;
+      margin-top: 1em;
+      padding-top: 1em;
+      border-top: 1px solid var(--border);
+    }
+    .island-stat-label {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--gold-400);
+      text-transform: uppercase;
+      font-size: 0.72em;
+    }
+    .island-stat-val {
+      color: var(--text-muted);
+      font-size: 0.82em;
+    }
+
+    /* ═══════════════════ SRD CTA ═══════════════════ */
+    .srd-cta {
+      background: var(--indigo-900);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 7em 0;
+    }
+    .srd-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('assets/aia-landmass-map.webp') center/55% no-repeat;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+    .srd-cta-inner { position: relative; z-index: 1; }
+    .srd-cta h2 {
+      font-size: 2.6em;
+      margin-bottom: 0.3em;
+      color: var(--gold-200);
+    }
+    .srd-cta hr.rule-divider { margin: 0.6em auto 1.3em; }
+    .srd-cta p {
+      color: var(--text-soft);
+      font-size: 1.02em;
+      max-width: 38em;
+      margin: 0 auto 2em;
+      line-height: 1.8;
+    }
+    .srd-features {
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      flex-wrap: wrap;
+      margin: 2em 0 2.5em;
+    }
+    .srd-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      font-size: 0.78em;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+    .srd-feature::before { content: '◆'; color: var(--gold-500); font-size: 0.7em; }
+    .srd-actions {
+      display: flex;
+      gap: 1em;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* ═══════════════════ Who / Braunstein ═══════════════════ */
+    .who {
+      background: var(--bg);
+      padding: 7em 0;
+    }
+    .who-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4em;
+      max-width: 60em;
+      margin: 0 auto;
+    }
+    .who-block h3 {
+      font-size: 1.15em;
+      margin-bottom: 0.5em;
+      color: var(--gold-300);
+    }
+    .who-block p {
+      color: var(--text-soft);
+      font-size: 0.95em;
+      margin-bottom: 1em;
+      line-height: 1.8;
+    }
+    .who-list {
+      list-style: none;
+      margin: 1em 0 0;
+      padding: 0;
+    }
+    .who-list li {
+      position: relative;
+      padding: 0.4em 0 0.4em 1.5em;
+      color: var(--text-soft);
+      font-size: 0.95em;
+    }
+    .who-list li::before {
+      content: '◆';
+      position: absolute;
+      left: 0;
+      color: var(--gold-500);
+      font-size: 0.7em;
+      top: 0.7em;
+    }
+
+    /* ═══════════════════ Connect ═══════════════════ */
+    .connect {
+      background: var(--bg-surface);
+      padding: 6em 0;
+    }
+    .connect-head {
+      text-align: center;
+      max-width: 40em;
+      margin: 0 auto 3em;
+    }
+    .connect-head h2 {
+      font-size: 2.2em;
+      margin-bottom: 0.3em;
+    }
+    .connect-head p {
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+    .connect-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5em;
+    }
+    .connect-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2em 1.75em;
+      border-radius: 0.2em;
+      display: flex;
+      flex-direction: column;
+    }
+    .connect-card h3 {
+      font-size: 0.95em;
+      color: var(--gold-300);
+      margin-bottom: 0.6em;
+    }
+    .connect-card h3::after {
+      content: '';
+      display: block;
+      width: 1.5em;
+      height: 1px;
+      background: var(--gold-ui);
+      margin: 0.4em 0 0.75em;
+      opacity: 0.4;
+    }
+    .connect-card p {
+      font-size: 0.875em;
+      color: var(--text-muted);
+      margin-bottom: 1.25em;
+      line-height: 1.65;
+      flex: 1;
+    }
+    .email-reveal {
+      color: var(--accent);
+      cursor: pointer;
+      border-bottom: 1px dashed rgba(98,237,216,0.4);
+      font-style: normal;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      font-family: inherit;
+      font-size: inherit;
+      padding: 0;
+    }
+    .email-reveal:hover { border-bottom-color: var(--accent); }
+
+    /* ═══════════════════ Footer ═══════════════════ */
+    footer {
+      background: var(--indigo-950);
+      border-top: 1px solid var(--border);
+      padding: 3em 0 2.5em;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2.5em;
+      align-items: center;
+    }
+    .footer-cyclopean img {
+      height: 2.2em;
+      width: auto;
+      opacity: 0.85;
+      transition: opacity 0.15s;
+    }
+    .footer-cyclopean:hover img { opacity: 1; }
+    .footer-brand {
+      font-family: 'Literata', serif;
+      font-size: 0.8em;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .footer-brand strong {
+      font-family: 'Inknut Antiqua', serif;
+      font-variant-caps: small-caps;
+      color: var(--gold-400);
+      font-weight: 700;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.75em;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-size: 0.78em;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+    .footer-links a:hover { color: var(--accent); text-decoration: none; }
+
+    /* ═══════════════════ Subscribe Modal ═══════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2em 1em;
+    }
+    .modal-overlay[aria-hidden="false"] { display: flex; }
+    .modal-content {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 0.3em;
+      max-width: 32em;
+      width: 100%;
+      position: relative;
+      padding: 2.5em 2.5em 2em;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+    }
+    .modal-close {
+      position: absolute;
+      top: 0.8em;
+      right: 1em;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3em;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.3em;
+    }
+    .modal-close:hover { color: var(--accent); }
+    .modal-heading {
+      font-family: 'Inknut Antiqua', serif;
+      font-variant-caps: small-caps;
+      font-weight: 700;
+      color: var(--gold-200);
+      font-size: 1.5em;
+      margin-bottom: 0.3em;
+    }
+    .modal-desc {
+      color: var(--text-soft);
+      font-size: 0.92em;
+      margin-bottom: 1.5em;
+      line-height: 1.6;
+    }
+    .iframe-wrapper {
+      background: var(--bg-elevated);
+      border-radius: 0.2em;
+      overflow: hidden;
+    }
+    .iframe-wrapper iframe {
+      display: block;
+      width: 100%;
+      border: none;
+      background: var(--bg-elevated);
+    }
+
+    /* ═══════════════════ Responsive ═══════════════════ */
+    @media (max-width: 64em) {
+      .who-grid { grid-template-columns: 1fr; gap: 2.5em; }
+      .connect-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 1.5em; text-align: center; justify-items: center; }
+      .container, .container-tight { padding: 0 1.75em; }
+      section { padding: 4.5em 0; }
+      .hero-overlay { padding: 2em 1.5em 5em; }
+      .hero-eyebrow { left: 1.5em; top: 1.5em; }
+      .excerpt { padding: 2em 1.75em; max-width: 92%; }
+      .excerpt-tag { left: 1.75em; }
+      .excerpt:nth-child(1) { transform: rotate(-1.2deg) translateX(-3%); }
+      .excerpt:nth-child(2) { transform: rotate(1.1deg) translateX(3%); margin-top: -1.5em; }
+      .excerpt:nth-child(3) { transform: rotate(-0.8deg) translateX(-1%); margin-top: -1.5em; }
+      .island-map-wrap {
+        transform: rotateX(8deg) rotateY(-6deg) rotateZ(-1deg);
+      }
+      .island-card {
+        position: static;
+        margin: 2em auto 0;
+        transform: rotate(0);
+        max-width: 36em;
+      }
+      .manifesto-bg { background-attachment: scroll; }
+    }
+    @media (max-width: 42em) {
+      .hero { min-height: 90vh; }
+      .hero-logo { max-width: 320px; }
+      .manifesto { padding: 5em 0; }
+      .manifesto-line { font-size: 1.1em; }
+      .manifesto-line.lead { font-size: 1.55em; }
+      .subscribe-pill { font-size: 0.7em; padding: 0.5em 0.9em; top: 0.8em; right: 0.8em; }
+      .hero-cta-group { flex-direction: column; align-items: center; gap: 0.75em; }
+      .container, .container-tight { padding: 0 1.25em; }
+      section { padding: 3.5em 0; }
+      .modal-content { padding: 2em 1.5em 1.5em; }
+      .srd-features { gap: 0.75em 1.5em; }
+      .island-map-wrap { transform: rotateX(4deg) rotateY(-3deg); }
+      .excerpt {
+        max-width: 100%;
+      }
+      .excerpt:nth-child(1), .excerpt:nth-child(2), .excerpt:nth-child(3) {
+        transform: none;
+        margin-top: 1.5em;
+      }
+      .excerpt:first-child { margin-top: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═════════════════════ Sticky Subscribe Pill ═════════════════════ -->
+  <button class="subscribe-pill" id="subscribe-pill" aria-label="Subscribe for updates">
+    Get Updates
+  </button>
+
+  <!-- ═════════════════════════════ HERO ════════════════════════════════ -->
+  <section class="hero" aria-label="Glass Empires introduction">
+    <div class="disc-stage" aria-hidden="true">
+      <div class="disc-pos">
+        <div class="disc-rotator">
+          <img class="disc-layer" src="assets/aia-disc-combined.webp" alt="" fetchpriority="high">
+        </div>
+        <div class="clouds-main" aria-hidden="true">
+          <img class="cloud-layer" src="assets/clouds-main.webp" alt="" fetchpriority="high">
+        </div>
+        <div class="clouds-secondary" aria-hidden="true">
+          <img class="cloud-layer" src="assets/clouds-secondary.webp" alt="" loading="lazy">
+        </div>
+        <div class="disc-shadow"></div>
+      </div>
+    </div>
+    <div class="hero-overlay">
+      <p class="hero-eyebrow">By Cyclopean · A Tabletop Role-Playing Game</p>
+      <div class="hero-content">
+        <img class="hero-logo" src="logo/main-wide.webp" alt="Glass Empires" width="540">
+        <p class="hero-thesis">Power is the ability to destroy.</p>
+        <p class="hero-thesis-sub">To hold power over something, you must be able to destroy it.</p>
+        <div class="hero-cta-group">
+          <a href="https://srd.glassempires.com" class="btn-primary">Read the SRD</a>
+          <a href="#manifesto" class="btn-secondary">What is this?</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════ Early Access Bar ═════════════════════ -->
+  <div class="ea-bar" role="status" aria-live="polite">
+    <p>
+      ◆ Early Access — The full system is <a href="https://srd.glassempires.com">free and online</a>.
+      Rules are still being written. <a href="#connect">Your feedback is desired!</a>
+    </p>
+  </div>
+
+  <!-- ═════════════ Cover region — wraps Thesis + From The Book ═════════════ -->
+  <div class="cover-region">
+    <div class="cover-art" aria-hidden="true"></div>
+    <div class="cover-veil" aria-hidden="true"></div>
+
+  <!-- ═════════════════════════════ MANIFESTO ═══════════════════════════ -->
+  <section class="manifesto" id="manifesto" aria-label="Design thesis">
+    <div class="container-tight">
+      <p class="section-eyebrow">The Thesis</p>
+      <div class="manifesto-stack">
+        <p class="manifesto-line lead">
+          Glass Empires simulates pre-industrial human power dynamics.
+          <small>On an animistic discworld where there is no distinction between magic and nature.</small>
+        </p>
+        <p class="manifesto-diamond" aria-hidden="true">◆</p>
+        <p class="manifesto-line">
+          An institution is tribal knowledge<br>&amp; great leaders.
+        </p>
+        <p class="manifesto-line">
+          Bureaucracies do not know how to be a bureaucracy.<br>
+          The bureaucrat knows how to be a bureaucracy.
+        </p>
+        <p class="manifesto-line">
+          All wars are bankers' wars,<br>
+          &amp; are means of resolving debts.
+        </p>
+        <p class="manifesto-line">
+          Every man is a bank, in different forms,<br>
+          &amp; to varying degrees of competency.
+        </p>
+        <p class="manifesto-attribution">
+          — <a href="https://srd.glassempires.com/rules/what-this-game-is">What This Game Is</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ EXCERPTS ════════════════════════════ -->
+  <section class="excerpts" aria-label="Sample rules from the SRD">
+    <div class="container">
+      <div class="excerpts-head">
+        <p class="section-eyebrow">From the Book</p>
+        <h2>Three Rules</h2>
+        <hr class="rule-divider center">
+      </div>
+
+      <div class="excerpts-stack">
+
+        <!-- Excerpt 1: Ritual Cooking -->
+        <article class="excerpt">
+          <span class="excerpt-tag">Magic · Ritual Cooking</span>
+          <h3>You Are What You Eat</h3>
+          <p class="excerpt-subtitle">Mutation through ritual consumption</p>
+          <p>
+            Anyone whose background indicates they learned <em>cooking</em> can make food
+            out of a fresh spirited corpse. The meal conveys some of the blessings —
+            and horrors — of a given creature.
+          </p>
+          <p>
+            Each character rolls 1d6 per HD they possess vs. 1d6 per HD they ate.
+            On a loss, they <strong>mutate to become more like the creature they ate.</strong>
+            For sapient creatures, this includes the mental qualities of that entity.
+            Write down the meal as a <em>Fact</em> applicable to mental and psychological acts.
+          </p>
+          <div class="excerpt-rule">
+            Many harpy flocks &amp; some salamanders prey on humans because going
+            from 1 HD to 2 HD is a big deal. The cost is that <strong>eating a peasant
+            makes you more peasantlike</strong> — which includes an incapacity for war
+            or violence. High-quality targets are rare and difficult to hunt
+            <em>specifically because</em> they're high-quality.
+          </div>
+          <a class="excerpt-link" href="https://srd.glassempires.com/rules/magic/ritual-cooking">
+            Read the full rule
+          </a>
+        </article>
+
+        <!-- Excerpt 2: Gangster -->
+        <article class="excerpt">
+          <span class="excerpt-tag">Class · Gangster</span>
+          <h3>Blackmail Ledger</h3>
+          <p class="excerpt-subtitle">A Gangster class feature</p>
+          <p>
+            You are a smuggler, racketeer, and underworld financier. You <em>solve problems</em>
+            beyond the scope of what the Lords' courts can help with. If you had your way,
+            nobody would ever know you existed — and most never do.
+          </p>
+          <div class="excerpt-rule">
+            <strong>Blackmail Ledger.</strong> The first time you personally spend at
+            least an hour with someone, you may ask the GM one of these questions
+            about them: <em>What's their deepest secret? Who do they fear? What debt
+            burdens them the most? Who would they betray first?</em> The GM must answer
+            truthfully, no longer than a sentence.
+          </div>
+          <p>
+            Other Gangster features include <strong>Network of Whispers</strong> (uncanny
+            knowledge of which factions were actually involved in any event),
+            <strong>Master of Implication</strong> (your verbal lies cannot be detected,
+            including by rules that say they can), and <strong>Strings Attached</strong>
+            (call in any debt at any time; on default, a free Sabotage Move).
+          </p>
+          <a class="excerpt-link" href="https://srd.glassempires.com/rules/character-creation/classes/gangster">
+            Read the full class
+          </a>
+        </article>
+
+        <!-- Excerpt 3: Mine Clan -->
+        <article class="excerpt">
+          <span class="excerpt-tag">Faction · Mine Clan</span>
+          <h3>Resource Monopoly</h3>
+          <p class="excerpt-subtitle">Salamanders and the politics of denial</p>
+          <p>
+            Your Capital is a <em>mine</em>, an underground center for resource production.
+            In Glass, <strong>every</strong> Mine is managed by Salamanders; Glassians no longer
+            know how. ~7,500–10,000 salamanders across 4–6 mine complexes hold the entire
+            metal economy of an island of half a million.
+          </p>
+          <div class="excerpt-rule">
+            <strong>Resource Monopoly (Minerals).</strong> As a Move with a 1-day Deadline,
+            you can Deny Minerals to <em>any</em> Faction. If they don't have a Neutral or
+            Friendly relationship with a sovereign who controls a Mine, all their
+            mineral-dependent Moves have doubled Deadlines, and all mineral-dependent
+            items doubled cost in $.
+          </div>
+          <p>
+            Your mine is an unwieldy nightmare of winding tunnels unnavigable by
+            anyone other than salamanders. <strong>Armies composed of non-subterranean
+            races cannot invade or occupy you.</strong> Cut off their surface supply,
+            though, and within a month their Families begin starving <em>en masse</em>.
+          </p>
+          <a class="excerpt-link" href="https://srd.glassempires.com/rules/factions/type-mine-clan">
+            Read the full faction type
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /.cover-region -->
+
+  <!-- ════════════════════════════ THE ISLAND ═════════════════════════════ -->
+  <section class="island" aria-label="The Island of Glass">
+    <div class="island-frame">
+      <div class="island-map-wrap">
+        <img src="assets/island-of-glass-nolabels.webp" alt="Map of the Island of Glass" loading="lazy">
+      </div>
+      <div class="island-card">
+        <p class="section-eyebrow" style="font-size:0.65em;">The Setting</p>
+        <h2>The Island of Glass</h2>
+        <hr class="rule-divider">
+        <p>
+          The default scenario plays out on <strong>Glass</strong>, a once-united island
+          whose immortal ruler, Kain, abdicated his throne. Civil war was the
+          inevitable result.
+        </p>
+        <p>
+          Lady Eagle is partnered with the Venetian banks. Lord Arcades runs a
+          necromantic Panopticon. Lord Beacon is backed by Hydrean Jesuits.
+          General Ram leads the populist uprising. Admiral Edward's amphibious
+          forces wait offshore. Salamanders mine the metal. Harpies fly the messages.
+          The <em>coralers</em> wait beneath the coast.
+        </p>
+        <div class="island-stats">
+          <div>
+            <div class="island-stat-label">Population</div>
+            <div class="island-stat-val">~500,000</div>
+          </div>
+          <div>
+            <div class="island-stat-label">Factions</div>
+            <div class="island-stat-val">5 major</div>
+          </div>
+          <div>
+            <div class="island-stat-label">Species</div>
+            <div class="island-stat-val">Human · Salamander · Harpy · Coraler</div>
+          </div>
+          <div>
+            <div class="island-stat-label">Status</div>
+            <div class="island-stat-val">Civil war</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ SRD CTA ═════════════════════════════ -->
+  <section class="srd-cta" aria-labelledby="srd-h">
+    <div class="container srd-cta-inner">
+      <p class="section-eyebrow">Free &amp; Online</p>
+      <h2 id="srd-h">Will Glass know your name?</h2>
+      <hr class="rule-divider center">
+      <p>
+        The entire game — rules, bestiary, setting, generators —
+        lives at <a href="https://srd.glassempires.com">srd.glassempires.com</a>. Searchable, hyperlinked,
+        and built to be used at the table. No PDF hassles, no paywall, no login.
+      </p>
+      <div class="srd-actions">
+        <a href="https://srd.glassempires.com" class="btn-primary">Open the SRD</a>
+        <a href="assets/glass-empires-printouts.pdf" class="btn-secondary" download>Download Character Sheet (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ WHO / BRAUNSTEIN ═══════════════════════ -->
+  <section class="who" aria-label="Who this is for">
+    <div class="container">
+      <div class="who-grid">
+        <div class="who-block">
+          <p class="section-eyebrow">What's a Braunstein?</p>
+          <h3>Many players. One referee. One world.</h3>
+          <hr class="rule-divider">
+          <p>
+            A <strong>Braunstein</strong> is a tabletop format predating Dungeons &amp;
+            Dragons. Players control rival factions across the same map.
+            A referee mediates simultaneous orders submitted each turn.
+            Conflicts resolve. Periods advance. Empires rise and fall.
+          </p>
+          <p>
+            Glass Empires is built for this mode but plays comfortably as a
+            traditional OSR campaign too — your character is still a person.
+            But your character's <em>power</em> is your faction.
+          </p>
+        </div>
+        <div class="who-block">
+          <p class="section-eyebrow">Who This Is For</p>
+          <h3>Players who think in systems.</h3>
+          <hr class="rule-divider">
+          <ul class="who-list">
+            <li>OSR / DIY-D&amp;D players who want rules with mechanical teeth</li>
+            <li>Gamemasters who run faction-heavy or domain-level campaigns</li>
+            <li>People who liked <em>ACKS</em>, <em>GLOG</em>, or <em>Monster Overhaul</em></li>
+            <li>Anyone curious about Braunstein-style play in a fantasy setting</li>
+            <li>Designers who appreciate rules that <em>do worldbuilding</em></li>
+            <li>Anyone who finished <em>Dune</em> and wanted more of <em>that</em></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ CONNECT ═════════════════════════════ -->
+  <section class="connect" id="connect" aria-label="Connect and feedback">
+    <div class="container">
+      <div class="connect-head">
+        <p class="section-eyebrow">Get Involved</p>
+        <h2>Connect</h2>
+        <hr class="rule-divider center">
+        <p>
+          The system is in early access. It is an extremely novel design and
+          it is not complete. Your feedback shapes what gets written next.
+        </p>
+      </div>
+      <div class="connect-grid">
+
+        <article class="connect-card">
+          <h3>Saki's Blog &amp; Newsletter</h3>
+          <p>
+            I write at Sakiroku — theory, design notes, and updates on
+            Glass Empires and other Cyclopean projects.
+          </p>
+          <button class="btn-secondary" id="open-subscribe">Subscribe</button>
+        </article>
+
+        <article class="connect-card">
+          <h3>Feedback &amp; Contact</h3>
+          <p>
+            Rules feedback, play reports & angry yelling are all welcome.
+            This is the kind of game that needs people to break it.
+          </p>
+          <p style="margin-bottom:0">
+            Email:
+            <button class="email-reveal" id="email-btn" aria-label="Click to reveal email address">
+              click to reveal
+            </button>
+          </p>
+        </article>
+
+        <article class="connect-card">
+          <h3>DnDungeon</h3>
+          <p>
+            Cyclopean's other big project — battlemaps and creative
+            assets for tabletop games. The reason any of this gets made.
+          </p>
+          <a href="https://dndungeon.com" class="btn-secondary">Visit DnDungeon</a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════ FOOTER ═════════════════════════════ -->
+  <footer>
+    <div class="container footer-inner">
+      <a href="https://cyclopeanarts.com" class="footer-cyclopean" aria-label="Cyclopean">
+        <img src="logo/cyclopean-wordmark-white.svg" alt="Cyclopean">
+      </a>
+      <p class="footer-brand">
+        <strong>Glass Empires</strong> by <strong>Saki</strong>, published by
+        <strong>Cyclopean</strong>.<br>
+        <span style="font-size:0.88em; color:var(--text-faint)">Early Access · All rules free and online</span>
+      </p>
+      <ul class="footer-links" aria-label="Site links">
+        <li><a href="https://srd.glassempires.com">SRD</a></li>
+        <li><a href="https://sakiroku.com">Blog</a></li>
+        <li><a href="https://dndungeon.com">DnDungeon</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- ════════════════════ Subscribe Modal ════════════════════ -->
+  <div class="modal-overlay" id="subscribe-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Subscribe for updates">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      <h2 class="modal-heading">Get Updates</h2>
+      <p class="modal-desc">
+        I post updates on my blog! New mechanics, design essays, and
+        playtest reports. Get them as they're released.
+      </p>
+      <div class="iframe-wrapper">
+        <iframe
+          src="https://sakiroku.com/embed"
+          width="480"
+          height="320"
+          frameborder="0"
+          scrolling="no"
+          allowtransparency="true"
+          title="Subscribe to Sakiroku"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ═══════ Subscribe modal ═══════
+    const modal = document.getElementById('subscribe-modal');
+    const openModal = () => {
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('modal-close').focus();
+    };
+    const closeModal = () => {
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+    document.getElementById('subscribe-pill').addEventListener('click', openModal);
+    document.getElementById('open-subscribe').addEventListener('click', openModal);
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
+    });
+
+    // ═══════ Email obfuscation ═══════
+    const btn = document.getElementById('email-btn');
+    if (btn) {
+      const reveal = () => {
+        const addr = atob('c2FraUBjeWNsb3BlYW4ubmV0');
+        const link = document.createElement('a');
+        link.href = 'mailto:' + addr;
+        link.textContent = addr;
+        link.style.color = 'var(--accent)';
+        btn.replaceWith(link);
+      };
+      btn.addEventListener('click', reveal);
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); reveal(); }
+      });
+    }
+  </script>
+</body>
+</html>
