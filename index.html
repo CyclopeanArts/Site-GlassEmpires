@@ -198,12 +198,17 @@
       box-shadow: 0 0 30px rgba(98,237,216,0.12);
     }
 
-    /* ═══════════════════ Sticky Subscribe ═══════════════════ */
-    .subscribe-pill {
+    /* ═══════════════════ Sticky Header Pills ═══════════════════ */
+    .header-pills {
       position: fixed;
       top: 1.2em;
       right: 1.2em;
       z-index: 60;
+      display: flex;
+      gap: 0.6em;
+    }
+    .subscribe-pill {
+      position: static;
       padding: 0.6em 1.1em;
       background: rgba(26, 20, 13, 0.85);
       backdrop-filter: blur(10px);
@@ -219,12 +224,7 @@
       cursor: pointer;
       transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.12s;
     }
-    .subscribe-pill:hover {
-      background: rgba(40, 30, 18, 0.95);
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: translateY(-1px);
-    }
+    .subscribe-pill:hover,
     .subscribe-pill::before {
       content: '◆';
       margin-right: 0.5em;
@@ -443,13 +443,13 @@
         0 2px 12px rgba(0,0,0,0.95),
         0 0 30px rgba(0,0,0,0.9);
     }
-    .hero-thesis-sub {
-      font-family: 'Inknut Antiqua', serif;
-      font-style: italic;
-      font-size: clamp(1em, 1.5vw, 1.2em);
-      line-height: 1.45;
-      color: var(--text-soft);
-      margin-bottom: 2em;
+    .hero-credit {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-size: 0.65em;
+      letter-spacing: 0.12em;
+      color: var(--gold-300);
+      margin-bottom: 2.2em;
       text-shadow:
         0 2px 12px rgba(0,0,0,0.95),
         0 0 30px rgba(0,0,0,0.9);
@@ -941,6 +941,39 @@
       top: 0.7em;
     }
 
+    /* ═══════════════════ Testimonial ═══════════════════ */
+    .testimonial {
+      background: var(--bg);
+      padding: 5em 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .testimonial blockquote {
+      max-width: 36em;
+      margin: 0 auto;
+      font-family: 'Inknut Antiqua', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.4em;
+      line-height: 1.45;
+      color: var(--gold-200);
+      text-shadow: 0 1px 20px rgba(0,0,0,0.8);
+      quotes: none;
+    }
+    .testimonial blockquote::before,
+    .testimonial blockquote::after {
+      content: none;
+    }
+    .testimonial .attribution {
+      font-family: 'Literata', serif;
+      font-variant-caps: small-caps;
+      font-size: 0.78em;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-top: 1.8em;
+    }
+
     /* ═══════════════════ Connect ═══════════════════ */
     .connect {
       background: var(--bg-surface);
@@ -1169,9 +1202,14 @@
 <body>
 
   <!-- ═════════════════════ Sticky Subscribe Pill ═════════════════════ -->
-  <button class="subscribe-pill" id="subscribe-pill" aria-label="Subscribe for updates">
-    Get Updates
-  </button>
+  <div class="header-pills">
+    <button class="subscribe-pill" href="assets/glass-empires-printouts.pdf" download aria-label="Download character sheets">
+      Print Sheets
+    </button>
+    <button class="subscribe-pill" id="subscribe-pill" aria-label="Subscribe for updates">
+      Get Updates
+    </button>
+  </div>
 
   <!-- ═════════════════════════════ HERO ════════════════════════════════ -->
   <section class="hero" aria-label="Glass Empires introduction">
@@ -1193,8 +1231,8 @@
       <p class="hero-eyebrow">By Cyclopean · A Tabletop Role-Playing Game</p>
       <div class="hero-content">
         <img class="hero-logo" src="logo/main-wide.webp" alt="Glass Empires" width="540">
-        <p class="hero-thesis">Power is the ability to destroy.</p>
-        <p class="hero-thesis-sub">To hold power over something, you must be able to destroy it.</p>
+        <p class="hero-thesis">The power to destroy a thing is the absolute control over it.</p>
+        <p class="hero-credit">&mdash; Frank Herbert, <cite>Dune</cite></p>
         <div class="hero-cta-group">
           <a href="https://srd.glassempires.com" class="btn-primary">Read the SRD</a>
           <a href="#manifesto" class="btn-secondary">What is this?</a>
@@ -1222,8 +1260,8 @@
       <p class="section-eyebrow">The Thesis</p>
       <div class="manifesto-stack">
         <p class="manifesto-line lead">
-          Glass Empires simulates pre-industrial human power dynamics.
-          <small>On an animistic discworld where there is no distinction between magic and nature.</small>
+          Glass Empires simulates pre-industrial human power dynamics
+          <small>on an animistic discworld where there is no distinction between magic and nature.</small>
         </p>
         <p class="manifesto-diamond" aria-hidden="true">◆</p>
         <p class="manifesto-line">
@@ -1399,7 +1437,7 @@
   <section class="srd-cta" aria-labelledby="srd-h">
     <div class="container srd-cta-inner">
       <p class="section-eyebrow">Free &amp; Online</p>
-      <h2 id="srd-h">Will Glass know your name?</h2>
+      <h2 id="srd-h">Glass will know your name</h2>
       <hr class="rule-divider center">
       <p>
         The entire game — rules, bestiary, setting, generators —
@@ -1440,13 +1478,21 @@
           <ul class="who-list">
             <li>OSR / DIY-D&amp;D players who want rules with mechanical teeth</li>
             <li>Gamemasters who run faction-heavy or domain-level campaigns</li>
-            <li>People who liked <em>ACKS</em>, <em>GLOG</em>, or <em>Monster Overhaul</em></li>
+            <li>People who liked <em>ACKS</em>, <em>GLOG</em>, or the <em>Monster Overhaul</em></li>
             <li>Anyone curious about Braunstein-style play in a fantasy setting</li>
             <li>Designers who appreciate rules that <em>do worldbuilding</em></li>
             <li>Anyone who finished <em>Dune</em> and wanted more of <em>that</em></li>
           </ul>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════ TESTIMONIAL ═════════════════════════════ -->
+  <section class="testimonial" aria-label="Playtester testimonial">
+    <div class="container-tight">
+      <blockquote>Probably one of the most psychotic games I've ever played.</blockquote>
+      <p class="attribution">&mdash; Playtester</p>
     </div>
   </section>
 
@@ -1465,6 +1511,7 @@
       <div class="connect-grid">
 
         <article class="connect-card">
+          <img class="connect-card-logo" src="logo/sakiroku-wordmark-thin-red-lighttext.png" alt="Sakiroku" style="width:100%;height:auto;margin-bottom:0.8em;opacity:0.85;">
           <h3>Saki's Blog &amp; Newsletter</h3>
           <p>
             I write at Sakiroku — theory, design notes, and updates on
@@ -1488,10 +1535,11 @@
         </article>
 
         <article class="connect-card">
+          <img class="connect-card-logo" src="logo/Logo-Icon-Name-Outline.svg" alt="DnDungeon" style="width:100%;height:auto;margin-bottom:0.8em;opacity:0.75;">
           <h3>DnDungeon</h3>
           <p>
-            Cyclopean's other big project — battlemaps and creative
-            assets for tabletop games. The reason any of this gets made.
+            Cyclopean's other big project: battlemaps & creative
+            assets for tabletop games.
           </p>
           <a href="https://dndungeon.com" class="btn-secondary">Visit DnDungeon</a>
         </article>
